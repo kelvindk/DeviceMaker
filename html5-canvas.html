@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML5 Canvas</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+    <script type="text/javascript" src="./javascripts/device_maker.js"></script>
+    <script type="text/javascript" src="./javascripts/component.js"></script>
+  </head>
+  <body bgcolor="#333333">
+
+    <style type="text/css">
+     #canvasDiv {
+      width:1000px;
+      height:800px;
+      margin: 0px auto;
+      border: 1px solid red;
+      /*background-color: grey;*/
+    }
+
+    </style>
+
+    <div id="canvasDiv"></div>
+    <script type="text/javascript"> 
+    $(document).ready(function() {
+    	 initCanvas();
+    });
+    </script>
+  </body>
+</html>
