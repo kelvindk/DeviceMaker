@@ -12,10 +12,11 @@ var gridSize = 20*layoutScale;
 var layoutBoundaryX = 800;
 var layoutBoundaryY = 800;
 
-var c;
+var c; //selected component
+var componentQueue = new Array();; //components, a queue to store all components on the grid.
 var componentFixedColor = "rgba(255, 255, 255, 0.8)";
 var componentSelectedColor = "rgba(0, 255, 0, 0.45)";
-var componentFontSize = 20*layoutScale;
+var componentFontSize = 15*layoutScale;
 
 
 
@@ -42,7 +43,9 @@ function initCanvas() {
 	context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    c = new Component("BLE", 200, 100, 100, 100);
+    componentQueue.push(new Component("BLE", 200, 100, 100, 100));
+    componentQueue.push(new Component("MPU9250", 300, 200, 100, 100));
+    c = componentQueue[0];
 
     redraw();
 
@@ -53,8 +56,10 @@ function initCanvas() {
 function redraw() {
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
 	drawGrid();
-	drawComponent(c);
-
+	for(i=0; i<componentQueue.length; i++) {
+		drawComponent(componentQueue[i]);
+	}
+	
 }
 
 
@@ -74,8 +79,9 @@ function drawGrid() {
 	context.stroke();
 }
 
+// Draw a component on grid.
 function drawComponent(component) {
-  	context.beginPath();
+	context.beginPath();
 	context.rect(component.pageX*layoutScale, component.pageY*layoutScale, 
 		component.dimX*layoutScale, component.dimY*layoutScale);
 	context.fillStyle = component.color;
