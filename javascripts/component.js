@@ -10,12 +10,6 @@ function Component(name, pageX, pageY, dimX, dimY) {
 	this.boundaryY = pageY + dimY;
 }
 
-Component.prototype.update = function(pageX, pageY) {
-	this.pageX = pageX;
-	this.pageY = pageY;
-
-}
-
 Component.prototype.alt = function() {
 	alert(this.name+" "+this.pageX+" "+this.pageY+" "+this.labelX()+" "+this.labelY());
 }
@@ -29,10 +23,14 @@ Component.prototype.labelY = function() {
 }
 
 Component.prototype.isComponentClicked = function(pageX, pageY, layoutScale) {
-	
-	var clicked = (pageX > this.pageX*layoutScale)&&(pageY > this.pageY*layoutScale)&&
-		(pageX < this.boundaryX*layoutScale)&&(pageY < this.boundaryY*layoutScale) ? true: false;
+	var clicked = (pageX >= this.pageX*layoutScale)&&(pageY >= this.pageY*layoutScale)&&
+		(pageX <= this.boundaryX*layoutScale)&&(pageY <= this.boundaryY*layoutScale) ? true: false;
 	// var rtn = pageX+" "+pageY+" "+clicked+" "+this.pageX+" "+this.pageY+" "+this.dimX+" "+this.dimY;
 	// alert(rtn);
 	return clicked;
+}
+
+Component.prototype.isCollision = function(c) {
+	
+	return false;
 }

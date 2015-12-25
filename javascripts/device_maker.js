@@ -63,10 +63,15 @@ function initCanvas() {
 function redraw() {
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
 	drawGrid();
+
+	// Draw all components on the layout.
 	for(i=0; i<componentQueue.length; i++) {
+		if(componentQueue[i] == c)
+			continue;
 		drawComponent(componentQueue[i]);
 	}
-	
+	// Draw the selected component on top layer.
+	drawComponent(c);
 }
 
 
@@ -103,6 +108,7 @@ function drawComponent(component) {
   	context.fillText(component.name, component.labelX()*layoutScale, component.labelY()*layoutScale);
 }
 
+
 var mouseMoveEvent = function(e) {
 	mouseX = e.clientX-canvas.offsetLeft;
     mouseY = e.clientY-canvas.offsetTop;
@@ -110,6 +116,8 @@ var mouseMoveEvent = function(e) {
     gridY = Math.round(mouseY/gridSize)*gridSize/layoutScale;
     boundaryX = layoutBoundaryX-(c.dimX*layoutScale);
     boundaryY = layoutBoundaryY-(c.dimY*layoutScale);
+
+    // Bound the component from the boundary of layout.
     if(mouseX>= boundaryX) {
     	c.pageX = boundaryX/layoutScale;
     }
@@ -122,11 +130,22 @@ var mouseMoveEvent = function(e) {
     else {
 		c.pageY = gridY;
 	}
+
+	// var collision = false;
+	var i;
+	// Check component collision.
+	for(i=0; i<componentQueue.length; i++) {
+		if(componentQueue[i] == c) {
+			continue;
+		}
+		// Collision check with current component.
+		if(componentQueue[i].isCollision(c)) {
+			alert("Collision!");
+			break;
+		}
+	}
 }
 
-function detectCollision() {
-
-}
 
 function onClick(e) {
 
@@ -159,16 +178,7 @@ function onClick(e) {
 }
 
 function dragComponent() {
-	var collision = false;
-	var i;
-	// Check component collision.
-	for(i=0; i<componentQueue.length; i++) {
-		if(componentQueue[i] == c) {
-			collision = true;
-			continue;
-		}
-		
-	}
+	
 
 	// Check if user clicked to drop component on layout.
 	if(mouseState == 0) { 
@@ -186,7 +196,7 @@ function dragComponent() {
 	requestAnimFrame(dragComponent);
 	context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText(collision+" "+i+" "+mouseX+" "+mouseY+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseX/gridSize)*gridSize, 800, 400);
+  	context.fillText(mouseX+" "+mouseY+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseX/gridSize)*gridSize, 800, 400);
 }
 
 window.requestAnimFrame = (function(callback) {
