@@ -14,10 +14,11 @@ var layoutBoundaryY = 800;
 
 var c; //selected component
 var componentQueue = new Array();; //components, a queue to store all components on the grid.
-var componentFixedColor = "rgba(255, 255, 255, 0.8)";
-var componentSelectedColor = "rgba(0, 255, 0, 0.45)";
+var componentFixedColor = "rgba(255, 255, 255, 0.6)";
+var componentSelectedColor = "rgba(0, 255, 0, 0.3)";
+var componentCollisionColor = "rgba(255, 0, 0, 0.3)";
 var componentFontSize = 15*layoutScale;
-
+var componentCollision = false;
 
 
 var mouseState = 0; //0:nothing, 1:clicked
@@ -43,8 +44,8 @@ function initCanvas() {
 	context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    componentQueue.push(new Component("BLE", 200, 100, 140, 140));
-    componentQueue.push(new Component("MPU9250", 300, 300, 100, 100));
+    componentQueue.push(new Component("BLE", 200, 100, 140, 140, layoutScale));
+    componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
     c = componentQueue[0];
 
     redraw();
@@ -99,14 +100,48 @@ function drawComponent(component) {
 	context.fillStyle = component.color;
 	context.fill();
 	context.closePath();
-	context.lineWidth = 1;
-	context.strokeStyle = 'red';
+	// context.lineWidth = 1;
+	// context.strokeStyle = 'red';
 	context.stroke();
 
 	context.font = componentFontSize+"pt Calibri";
   	context.fillStyle = "rgba(50, 50, 50, 1)";
   	context.fillText(component.name, component.labelX()*layoutScale, component.labelY()*layoutScale);
 }
+
+
+// Mouse left click handler.
+function onClick(e) {
+
+	switch(mouseState) {
+    case 0:
+    	for(i=0; i<componentQueue.length; i++) {
+			// drawComponent(componentQueue[i]);
+			if(componentQueue[i].isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)) {
+				canvas.addEventListener('mousemove', mouseMoveEvent, false);
+			    mouseState = 1;
+			    componentQueue[i].color = componentSelectedColor;
+				requestAnimFrame(dragComponent);
+				c = componentQueue[i];
+				break;
+			}
+		}
+        break;
+    case 1:
+    	if(!componentCollision)
+    		mouseState = 0;
+        break;
+    default:
+        
+	}
+	
+	redraw();
+    context.font = '16pt Calibri';
+  	context.fillStyle = 'gray';
+  	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 300);
+  	context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
+}
+
 
 
 var mouseMoveEvent = function(e) {
@@ -117,7 +152,8 @@ var mouseMoveEvent = function(e) {
     boundaryX = layoutBoundaryX-(c.dimX*layoutScale);
     boundaryY = layoutBoundaryY-(c.dimY*layoutScale);
 
-    // Bound the component from the boundary of layout.
+
+	// Bound the component from the boundary of layout.
     if(mouseX>= boundaryX) {
     	c.pageX = boundaryX/layoutScale;
     }
@@ -131,50 +167,20 @@ var mouseMoveEvent = function(e) {
 		c.pageY = gridY;
 	}
 
-	// var collision = false;
-	var i;
 	// Check component collision.
 	for(i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i] == c) {
 			continue;
 		}
 		// Collision check with current component.
-		if(componentQueue[i].isCollision(c)) {
-			alert("Collision!");
-			break;
+		if(componentQueue[i].isCollision(c, layoutScale)) {
+			c.color = componentCollisionColor;
+			componentCollision = true;
+			return;
 		}
 	}
-}
-
-
-function onClick(e) {
-
-	switch(mouseState) {
-    case 0:
-    	for(i=0; i<componentQueue.length; i++) {
-			// drawComponent(componentQueue[i]);
-			if(componentQueue[i].isComponentClicked(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop, layoutScale)) {
-				canvas.addEventListener('mousemove', mouseMoveEvent, false);
-			    mouseState = 1;
-			    componentQueue[i].color = componentSelectedColor;
-				requestAnimFrame(dragComponent);
-				c = componentQueue[i];
-				break;
-			}
-		}
-        break;
-    case 1:
-    	mouseState = 0;
-        break;
-    default:
-        
-	}
-	
-	redraw();
-    context.font = '16pt Calibri';
-  	context.fillStyle = 'gray';
-  	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 300);
-  	context.fillText(c.isComponentClicked(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop, layoutScale)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
+	c.color = componentSelectedColor;
+	componentCollision = false;	
 }
 
 function dragComponent() {
@@ -191,12 +197,12 @@ function dragComponent() {
 	}
 	
 	redraw();
-
 	// Enable the animation that the selected component follows mouse cursor.
 	requestAnimFrame(dragComponent);
+
 	context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText(mouseX+" "+mouseY+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseX/gridSize)*gridSize, 800, 400);
+  	context.fillText(componentCollision+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseY/gridSize)*gridSize+" "+c.pageX+" "+c.pageY, 800, 400);
 }
 
 window.requestAnimFrame = (function(callback) {
