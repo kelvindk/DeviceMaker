@@ -12,7 +12,8 @@ var gridSize = 20*layoutScale;
 var layoutBoundaryX = 800;
 var layoutBoundaryY = 800;
 
-var c; //selected component
+var c; //selected component.
+var preX, preY; // Previous position of selected component.
 var componentQueue = new Array();; //components, a queue to store all components on the grid.
 var componentFixedColor = "rgba(255, 255, 255, 0.6)";
 var componentSelectedColor = "rgba(0, 255, 0, 0.3)";
@@ -62,15 +63,18 @@ function initCanvas() {
 
 // Redraw current state.
 function redraw() {
+	// Clean layout.
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
+	// Draw grid.
 	drawGrid();
-
 	// Draw all components on the layout.
 	for(i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i] == c)
 			continue;
 		drawComponent(componentQueue[i]);
 	}
+
+
 	// Draw the selected component on top layer.
 	drawComponent(c);
 }
@@ -100,8 +104,10 @@ function drawComponent(component) {
 	context.fillStyle = component.color;
 	context.fill();
 	context.closePath();
-	// context.lineWidth = 1;
-	// context.strokeStyle = 'red';
+	if((mouseState==1)&&(c==component)) {
+		context.lineWidth = 1;
+		context.strokeStyle = 'red';
+	}
 	context.stroke();
 
 	context.font = componentFontSize+"pt Calibri";
@@ -116,20 +122,25 @@ function onClick(e) {
 	switch(mouseState) {
     case 0:
     	for(i=0; i<componentQueue.length; i++) {
-			// drawComponent(componentQueue[i]);
 			if(componentQueue[i].isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)) {
 				canvas.addEventListener('mousemove', mouseMoveEvent, false);
 			    mouseState = 1;
 			    componentQueue[i].color = componentSelectedColor;
 				requestAnimFrame(dragComponent);
 				c = componentQueue[i];
+				preX = c.pageX;
+				preY = c.pageY;
+				// Enable keyboard event.
+				window.addEventListener('keydown',keybaordEvent,false);
 				break;
 			}
 		}
         break;
     case 1:
-    	if(!componentCollision)
+    	if(!componentCollision) {
+    		window.removeEventListener('keydown', keybaordEvent);
     		mouseState = 0;
+    	}
         break;
     default:
         
@@ -143,6 +154,14 @@ function onClick(e) {
 }
 
 
+function keybaordEvent(e) {
+	if(e.keyCode == 27) { // ESC
+		mouseState = 0;
+		c.pageX = preX;
+		c.pageY = preY;
+		window.removeEventListener('keydown', keybaordEvent);
+	}
+}
 
 var mouseMoveEvent = function(e) {
 	mouseX = e.clientX-canvas.offsetLeft;
