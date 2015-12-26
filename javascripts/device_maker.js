@@ -1,17 +1,17 @@
  
-
+// Layout
 var canvas;
 var context;
-var canvasWidth = 1000;
+var canvasWidth = 1100;
 var canvasHeight = 800;
 var backgroundColor = "#333333";
 var gridColor = "#ffffff";
-
 var layoutScale = 1;
 var gridSize = 20*layoutScale;
 var layoutBoundaryX = 800;
 var layoutBoundaryY = 800;
 
+// Component
 var c; //selected component.
 var preX, preY; // Previous position of selected component.
 var componentQueue = new Array();; //components, a queue to store all components on the grid.
@@ -21,10 +21,13 @@ var componentCollisionColor = "rgba(255, 0, 0, 0.3)";
 var componentFontSize = 15*layoutScale;
 var componentCollision = false;
 
-
+// Mouse
 var mouseState = 0; //0:nothing, 1:clicked
 var mouseX, mouseY;
 var gridX, gridY;
+var mouseDownTS;
+var mouseLongPressPeriod = 300;
+var mouseDownTimeoutVar;
 
 /*
 	Initialize the canvas, drawing the grid of layout.
@@ -38,7 +41,8 @@ function initCanvas() {
 	canvas.setAttribute('id', 'canvas');
 
 	canvasDiv.appendChild(canvas);
-    canvasDiv.addEventListener("click", onClick, false);
+    canvas.addEventListener("mousedown", onMouseDown, false);
+    canvas.addEventListener("mouseup", onMouseup, false);
 
 	context = canvas.getContext("2d");
 
@@ -67,6 +71,7 @@ function redraw() {
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
 	// Draw grid.
 	drawGrid();
+
 	// Draw all components on the layout.
 	for(i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i] == c)
@@ -77,6 +82,10 @@ function redraw() {
 
 	// Draw the selected component on top layer.
 	drawComponent(c);
+
+	// Draw the info if component is selected.
+	if(c.selected || (mouseState == 1)) 
+		drawInfo();
 }
 
 
@@ -104,37 +113,83 @@ function drawComponent(component) {
 	context.fillStyle = component.color;
 	context.fill();
 	context.closePath();
-	if((mouseState==1)&&(c==component)) {
+	if(component.selected ||((mouseState==1)&&(c==component))) {
 		context.lineWidth = 1;
 		context.strokeStyle = 'red';
 	}
 	context.stroke();
+
 
 	context.font = componentFontSize+"pt Calibri";
   	context.fillStyle = "rgba(50, 50, 50, 1)";
   	context.fillText(component.name, component.labelX()*layoutScale, component.labelY()*layoutScale);
 }
 
+// Draw info of selected component.
+function drawInfo() {
+	context.beginPath();
+	context.rect(850, 50, 100, 100);
+	context.fillStyle = "red";
+	context.fill();
+	context.closePath();
+	context.stroke();
+}
+
+function onMouseup(e) {
+	if(mouseState != 0)
+		return;
+	clearTimeout(mouseDownTimeoutVar);
+
+	for(i=0; i<componentQueue.length; i++) {
+		if(componentQueue[i].isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)) {
+			c = componentQueue[i];
+			c.selected = true;
+			redraw();
+			break;
+		}
+	}
+
+	context.font = '16pt Calibri';
+  	context.fillStyle = 'gray';
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 400);
+}
+
+function mouseDownTimeout() {
+	if(mouseState == 1)
+		return;
+
+	for(i=0; i<componentQueue.length; i++) {
+		if(componentQueue[i].isInComponentArea(mouseX-canvas.offsetLeft, mouseY-canvas.offsetTop)) {
+			canvas.addEventListener('mousemove', mouseMoveEvent, false);
+		    mouseState = 1;
+		    componentQueue[i].color = componentSelectedColor;
+			requestAnimFrame(dragComponent);
+			c = componentQueue[i];
+			preX = c.pageX;
+			preY = c.pageY;
+
+			// Enable keyboard event.
+			window.addEventListener('keydown',keybaordEvent,false);
+			break;
+		}
+	}
+}
+
 
 // Mouse left click handler.
-function onClick(e) {
+function onMouseDown(e) {
+	if(e.which != 1)
+		return;
+	
+	mouseDownTS = e.timeStamp;
+	mouseX = e.pageX;
+	mouseY = e.pageY;
+	
 
 	switch(mouseState) {
     case 0:
-    	for(i=0; i<componentQueue.length; i++) {
-			if(componentQueue[i].isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)) {
-				canvas.addEventListener('mousemove', mouseMoveEvent, false);
-			    mouseState = 1;
-			    componentQueue[i].color = componentSelectedColor;
-				requestAnimFrame(dragComponent);
-				c = componentQueue[i];
-				preX = c.pageX;
-				preY = c.pageY;
-				// Enable keyboard event.
-				window.addEventListener('keydown',keybaordEvent,false);
-				break;
-			}
-		}
+    	mouseDownTimeoutVar = setTimeout(mouseDownTimeout, mouseLongPressPeriod);
+
         break;
     case 1:
     	if(!componentCollision) {
@@ -146,11 +201,13 @@ function onClick(e) {
         
 	}
 	
+	c.selected = false;
 	redraw();
     context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
   	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 300);
-  	context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 350);
+  	// context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
 }
 
 
