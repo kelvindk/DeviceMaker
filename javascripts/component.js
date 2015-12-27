@@ -42,8 +42,8 @@ Component.prototype.isCollision = function(c) {
 		return true;
 	if(this.isInComponentArea(c.pageX+c.dimX, c.pageY+c.dimY))
 		return true;
-	for(i=c.pageX; i<c.pageX+c.dimX; i=i+gridSize) {
-		for(j=c.pageY; j<c.pageY+c.dimY; j=j+gridSize) {
+	for(i=c.pageX; i<=c.pageX+c.dimX; i=i+gridSize) {
+		for(j=c.pageY; j<=c.pageY+c.dimY; j=j+gridSize) {
 			if(this.isInComponentArea(i, j))
 				return true;
 		}

@@ -11,10 +11,15 @@ var gridSize = 20*layoutScale;
 var layoutBoundaryX = 800;
 var layoutBoundaryY = 800;
 
+// Icon
+var iconQueue = new Array();
+var iconImages = {};
+var iconLoaded = false;
+
 // Component
 var c; //selected component.
 var preX, preY; // Previous position of selected component.
-var componentQueue = new Array();; //components, a queue to store all components on the grid.
+var componentQueue = new Array(); //components, a queue to store all components on the grid.
 var componentFixedColor = "rgba(255, 255, 255, 0.6)";
 var componentSelectedColor = "rgba(0, 255, 0, 0.3)";
 var componentCollisionColor = "rgba(255, 0, 0, 0.3)";
@@ -26,7 +31,7 @@ var mouseState = 0; //0:nothing, 1:clicked
 var mouseX, mouseY;
 var gridX, gridY;
 var mouseDownTS;
-var mouseLongPressPeriod = 300;
+var mouseLongPressPeriod = 250;
 var mouseDownTimeoutVar;
 
 /*
@@ -49,6 +54,12 @@ function initCanvas() {
 	context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
+    // Load icons.
+ 	iconQueue.push("./icons/export-icon.png");
+ 	iconQueue.push("./icons/import-icon.png");
+ 	loadImages(iconQueue);
+
+ 	// Load component.
     componentQueue.push(new Component("BLE", 200, 100, 140, 140, layoutScale));
     componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
     c = componentQueue[0];
@@ -72,20 +83,33 @@ function redraw() {
 	// Draw grid.
 	drawGrid();
 
-	// Draw all components on the layout.
-	for(i=0; i<componentQueue.length; i++) {
-		if(componentQueue[i] == c)
-			continue;
-		drawComponent(componentQueue[i]);
-	}
+	// Draw icons.
+	drawIcons();
 
-
-	// Draw the selected component on top layer.
-	drawComponent(c);
+	// Draw all components.
+	drawComponents(c);
 
 	// Draw the info if component is selected.
 	if(c.selected || (mouseState == 1)) 
 		drawInfo();
+}
+
+// Draw all icons on the canvas.
+function drawIcons() {
+	// context.beginPath();
+ //    context.moveTo(800, 0);
+ //    context.lineTo(1200, 0);
+ //    context.lineTo(1200, 70);
+ //    context.lineTo(800, 70);
+ //    context.closePath();
+ //    context.fillStyle = "rgba(200, 200, 200, 1)";
+ //    context.fill();
+
+ 	if(iconLoaded) {
+ 		for( i=0; i<iconQueue.length; i++) {
+ 			context.drawImage(iconImages[i], 805+i*55, 5, 50, 50);
+ 		}
+ 	}
 }
 
 
@@ -93,7 +117,7 @@ function redraw() {
 function drawGrid() {
 	context.beginPath();
 	context.lineWidth = 0.1;
-    for (var i = 0; i <= canvasHeight; i=i+gridSize) {
+    for (i = 0; i <= canvasHeight; i=i+gridSize) {
     	context.moveTo(i, 0);
     	context.lineTo(i, canvasHeight);
     	context.moveTo(0, i);
@@ -103,6 +127,18 @@ function drawGrid() {
 
 	context.strokeStyle = gridColor; 
 	context.stroke();
+}
+
+// Draw all component on grid.
+function drawComponents(c) {
+	for(i=0; i<componentQueue.length; i++) {
+		if(componentQueue[i] == c)
+			continue;
+		drawComponent(componentQueue[i]);
+	}
+
+	// Draw the selected component on top layer.
+	drawComponent(c);
 }
 
 // Draw a component on grid.
@@ -128,11 +164,16 @@ function drawComponent(component) {
 // Draw info of selected component.
 function drawInfo() {
 	context.beginPath();
-	context.rect(850, 50, 100, 100);
-	context.fillStyle = "red";
+	context.rect(820, 100, 260, 200);
+	context.fillStyle = "rgba(255, 255, 255, 0.8)";
 	context.fill();
 	context.closePath();
-	context.stroke();
+	// context.stroke();
+
+	context.font = componentFontSize+"pt Calibri";
+  	context.fillStyle = "gray";
+  	context.fillText(c.name, 850, 150);
+
 }
 
 function onMouseup(e) {
@@ -151,7 +192,7 @@ function onMouseup(e) {
 
 	context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 400);
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
 }
 
 function mouseDownTimeout() {
@@ -205,8 +246,8 @@ function onMouseDown(e) {
 	redraw();
     context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 300);
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 350);
+  	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 600);
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 650);
   	// context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
 }
 
@@ -288,4 +329,18 @@ window.requestAnimFrame = (function(callback) {
 	  window.setTimeout(callback, 1000 / 60);
 	};
 })();
+
+function loadImages(sources) {
+    var loadedImages = 0;
+    for(i=0; i<sources.length; i++) {
+      iconImages[i] = new Image();
+      iconImages[i].onload = function() {
+        if(++loadedImages >= sources.length) {
+          iconLoaded = true;
+          drawIcons();
+        }
+      };
+      iconImages[i].src = sources[i];
+    }
+}
 
