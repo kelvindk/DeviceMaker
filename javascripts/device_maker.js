@@ -11,11 +11,6 @@ var gridSize = 20*layoutScale;
 var layoutBoundaryX = 800;
 var layoutBoundaryY = 800;
 
-// Icon
-var iconQueue = new Array();
-var iconImages = {};
-var iconLoaded = false;
-
 // Component
 var c; //selected component.
 var preX, preY; // Previous position of selected component.
@@ -38,33 +33,28 @@ var mouseDownTimeoutVar;
 	Initialize the canvas, drawing the grid of layout.
 */
 function initCanvas() {
-	// Create a canvas
+	// Create grid canvas
 	var canvasDiv = document.getElementById('canvasDiv');
 	canvas = document.createElement('canvas');
 	canvas.setAttribute('width', canvasWidth);
 	canvas.setAttribute('height', canvasHeight);
 	canvas.setAttribute('id', 'canvas');
-
 	canvasDiv.appendChild(canvas);
-    canvas.addEventListener("mousedown", onMouseDown, false);
-    canvas.addEventListener("mouseup", onMouseup, false);
-
 	context = canvas.getContext("2d");
-
 	context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Load icons.
- 	iconQueue.push("./icons/export-icon.png");
- 	iconQueue.push("./icons/import-icon.png");
- 	loadImages(iconQueue);
+    canvas.addEventListener("mousedown", onMouseDown, false);
+    canvas.addEventListener("mouseup", onMouseup, false);
 
  	// Load component.
-    componentQueue.push(new Component("BLE", 200, 100, 140, 140, layoutScale));
+    componentQueue.push(new Component("nRF51822", 200, 100, 140, 140, layoutScale));
     componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
     c = componentQueue[0];
 
     redraw();
+
+    console.log("Initialize");
 
 	// Mouse right click event.
  //    canvasDiv.addEventListener('contextmenu', function(ev) {
@@ -72,19 +62,20 @@ function initCanvas() {
 	//     // alert('success!');
 	//     return false;
 	// }, false);
-
 }
 
+// $(canvasIconDiv).hide();
+// $(canvasIconDiv).show();
+// $(document.getElementById('componentList')).show();
 
 // Redraw current state.
 function redraw() {
 	// Clean layout.
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
+	contextPanel.clearRect(0, 0, 300, 400);
+
 	// Draw grid.
 	drawGrid();
-
-	// Draw icons.
-	drawIcons();
 
 	// Draw all components.
 	drawComponents(c);
@@ -92,24 +83,6 @@ function redraw() {
 	// Draw the info if component is selected.
 	if(c.selected || (mouseState == 1)) 
 		drawInfo();
-}
-
-// Draw all icons on the canvas.
-function drawIcons() {
-	// context.beginPath();
- //    context.moveTo(800, 0);
- //    context.lineTo(1200, 0);
- //    context.lineTo(1200, 70);
- //    context.lineTo(800, 70);
- //    context.closePath();
- //    context.fillStyle = "rgba(200, 200, 200, 1)";
- //    context.fill();
-
- 	if(iconLoaded) {
- 		for( i=0; i<iconQueue.length; i++) {
- 			context.drawImage(iconImages[i], 805+i*55, 5, 50, 50);
- 		}
- 	}
 }
 
 
@@ -163,16 +136,16 @@ function drawComponent(component) {
 
 // Draw info of selected component.
 function drawInfo() {
-	context.beginPath();
-	context.rect(820, 100, 260, 200);
-	context.fillStyle = "rgba(255, 255, 255, 0.8)";
-	context.fill();
-	context.closePath();
+	contextPanel.beginPath();
+	contextPanel.rect(0, 0, 300, 200);
+	contextPanel.fillStyle = "rgba(255, 255, 255, 0.8)";
+	contextPanel.fill();
+	contextPanel.closePath();
 	// context.stroke();
 
-	context.font = componentFontSize+"pt Calibri";
-  	context.fillStyle = "gray";
-  	context.fillText(c.name, 850, 150);
+	contextPanel.font = componentFontSize*1.2+"pt Calibri";
+  	contextPanel.fillStyle = "red";
+  	contextPanel.fillText(c.name+" info...", 5, 20);
 
 }
 
@@ -182,7 +155,7 @@ function onMouseup(e) {
 	clearTimeout(mouseDownTimeoutVar);
 
 	for(i=0; i<componentQueue.length; i++) {
-		if(componentQueue[i].isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)) {
+		if(componentQueue[i].isInComponentArea(e.pageX-canvasDiv.offsetLeft, e.pageY-canvasDiv.offsetTop)) {
 			c = componentQueue[i];
 			c.selected = true;
 			redraw();
@@ -192,7 +165,7 @@ function onMouseup(e) {
 
 	context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 750);
 }
 
 function mouseDownTimeout() {
@@ -200,7 +173,7 @@ function mouseDownTimeout() {
 		return;
 
 	for(i=0; i<componentQueue.length; i++) {
-		if(componentQueue[i].isInComponentArea(mouseX-canvas.offsetLeft, mouseY-canvas.offsetTop)) {
+		if(componentQueue[i].isInComponentArea(mouseX-canvasDiv.offsetLeft, mouseY-canvasDiv.offsetTop)) {
 			canvas.addEventListener('mousemove', mouseMoveEvent, false);
 		    mouseState = 1;
 		    componentQueue[i].color = componentSelectedColor;
@@ -246,8 +219,8 @@ function onMouseDown(e) {
 	redraw();
     context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText((e.pageX-canvas.offsetLeft)+"  "+(e.pageY-canvas.offsetTop)+" "+mouseState+" "+c.pageX+" "+c.pageY, 800, 600);
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 650);
+  	context.fillText((e.pageX-canvasDiv.offsetLeft)+"  "+(e.pageY-canvasDiv.offsetTop)+" "+c.pageX+" "+c.pageY, 800, 650);
+  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
   	// context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
 }
 
@@ -262,8 +235,8 @@ function keybaordEvent(e) {
 }
 
 var mouseMoveEvent = function(e) {
-	mouseX = e.clientX-canvas.offsetLeft;
-    mouseY = e.clientY-canvas.offsetTop;
+	mouseX = e.clientX-canvasDiv.offsetLeft;
+    mouseY = e.clientY-canvasDiv.offsetTop;
     gridX = Math.round(mouseX/gridSize)*gridSize/layoutScale;
     gridY = Math.round(mouseY/gridSize)*gridSize/layoutScale;
     boundaryX = layoutBoundaryX-(c.dimX*layoutScale);
@@ -319,7 +292,7 @@ function dragComponent() {
 
 	context.font = '16pt Calibri';
   	context.fillStyle = 'gray';
-  	context.fillText(componentCollision+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseY/gridSize)*gridSize+" "+c.pageX+" "+c.pageY, 800, 400);
+  	context.fillText(componentCollision+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseY/gridSize)*gridSize+" "+c.pageX+" "+c.pageY, 800, 700);
 }
 
 window.requestAnimFrame = (function(callback) {
@@ -330,17 +303,4 @@ window.requestAnimFrame = (function(callback) {
 	};
 })();
 
-function loadImages(sources) {
-    var loadedImages = 0;
-    for(i=0; i<sources.length; i++) {
-      iconImages[i] = new Image();
-      iconImages[i].onload = function() {
-        if(++loadedImages >= sources.length) {
-          iconLoaded = true;
-          drawIcons();
-        }
-      };
-      iconImages[i].src = sources[i];
-    }
-}
 

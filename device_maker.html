@@ -2,28 +2,36 @@
 <html>
   <head>
     <title>HTML5 Canvas</title>
+    <link rel="stylesheet" type="text/css" href="device_maker.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
     <script type="text/javascript" src="./javascripts/device_maker.js"></script>
+    <script type="text/javascript" src="./javascripts/icon.js"></script>
+    <script type="text/javascript" src="./javascripts/panel.js"></script>
     <script type="text/javascript" src="./javascripts/component.js"></script>
   </head>
   <body bgcolor="#333333">
 
-    <style type="text/css">
-     #canvasDiv {
-      width:1100px;
-      height:800px;
-      margin: 0px auto;
-      border: 1px solid red;
-      /*background-color: grey;*/
-    }
-
-    </style>
-
     <div id="canvasDiv"></div>
+    <div id="canvasIconDiv"></div>
+    <div id="canvasPanelDiv"></div>
+    <!-- <div id="componentList">
+      KKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+    </div> -->
+
     <script type="text/javascript"> 
     $(document).ready(function() {
-    	 initCanvas();
+       initIconCanvas();
+       initPanelCanvas();
+
+       initCanvas();
     });
     </script>
+
   </body>
 </html>
