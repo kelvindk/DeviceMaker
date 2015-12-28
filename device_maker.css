@@ -69,6 +69,12 @@
   /*display: none;*/
 }
 
+.conponentButton {
+  width: 200px;
+  height: 100px;
+  font-size: 50pt;
+}
+
 /*----- Tabs -----*/
 .tabs {
     width:100%;
@@ -94,7 +100,7 @@
             padding:9px 15px;
             display:inline-block;
             border-radius:10px 10px 0px 0px;
-            background:#7FB5DA;
+            background:#afafaf;
             font-size:16px;
             font-weight:600;
             color:#4c4c4c;
@@ -103,7 +109,7 @@
         }
  
         .tab-links a:hover {
-            background:#a7cce5;
+            background:#cfcfcf;
             text-decoration:none;
         }
  

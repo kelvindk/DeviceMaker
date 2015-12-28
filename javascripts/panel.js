@@ -21,8 +21,8 @@ function initPanelCanvas() {
 	console.log("Initialize Panel");
 }
 
-function showComponentList() {
-	alert("QQQ");
+function showComponentList(e) {
 	var div = document.getElementById('uC');
-	div.innerHTML = div.innerHTML + "ADDDDDDDDD";
+	// e.style.color = 'red';
+	div.innerHTML = div.innerHTML + "<i>"+e.value+"</i>";
 }
