@@ -29,6 +29,20 @@ var mouseDownTS;
 var mouseLongPressPeriod = 250;
 var mouseDownTimeoutVar;
 
+$(document).ready(function() {
+	// Standard
+	$('.tab-links a').on('click', function(e)  {
+		var currentAttrValue = $(this).attr('href');
+		// Show/Hide Tabs
+		$('.tabs ' + currentAttrValue).show().siblings().hide();
+
+		// Change/remove current tab to active
+		$(this).parent('li').addClass('active').siblings().removeClass('active');
+
+		e.preventDefault();
+	});
+});
+
 /*
 	Initialize the canvas, drawing the grid of layout.
 */

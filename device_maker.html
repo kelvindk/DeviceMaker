@@ -3,7 +3,7 @@
   <head>
     <title>HTML5 Canvas</title>
     <link rel="stylesheet" type="text/css" href="device_maker.css">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
     <script type="text/javascript" src="./javascripts/device_maker.js"></script>
     <script type="text/javascript" src="./javascripts/icon.js"></script>
     <script type="text/javascript" src="./javascripts/panel.js"></script>
@@ -14,7 +14,29 @@
     <div id="canvasDiv"></div>
     <div id="canvasIconDiv"></div>
     <div id="canvasPanelDiv"></div>
-    <!-- <div id="componentList">
+    <div id="canvasMenuDiv">
+      
+      <div class="tabs">
+        <ul class="tab-links">
+          <li class="active"><a href="#uC">Microcontroller</a></li>
+          <li><a href="#sensor">Sensor</a></li>
+        </ul>
+ 
+        <div class="tab-content">
+          <div id="uC" class="tab active">
+              <input type="button" value="Add component" onclick="showComponentList();">
+              
+          </div>
+   
+          <div id="sensor" class="tab">
+              MPU9250
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div id="componentListDiv">
+      <div id="component1" class="div-inline">QQQQQQQQ</div><div id="component2" class="div-inline">QQQQQQQQ</div><div id="component3" class="div-inline">QQQQQQQQ</div>
       KKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
       KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
       KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
@@ -22,7 +44,7 @@
       KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
       KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
       KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-    </div> -->
+    </div>
 
     <script type="text/javascript"> 
     $(document).ready(function() {

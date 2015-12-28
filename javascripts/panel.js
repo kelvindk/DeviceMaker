@@ -20,3 +20,9 @@ function initPanelCanvas() {
 
 	console.log("Initialize Panel");
 }
+
+function showComponentList() {
+	alert("QQQ");
+	var div = document.getElementById('uC');
+	div.innerHTML = div.innerHTML + "ADDDDDDDDD";
+}
