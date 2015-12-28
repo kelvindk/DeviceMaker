@@ -29,19 +29,6 @@ var mouseDownTS;
 var mouseLongPressPeriod = 250;
 var mouseDownTimeoutVar;
 
-$(document).ready(function() {
-	// Standard
-	$('.tab-links a').on('click', function(e)  {
-		var currentAttrValue = $(this).attr('href');
-		// Show/Hide Tabs
-		$('.tabs ' + currentAttrValue).show().siblings().hide();
-
-		// Change/remove current tab to active
-		$(this).parent('li').addClass('active').siblings().removeClass('active');
-
-		e.preventDefault();
-	});
-});
 
 /*
 	Initialize the canvas, drawing the grid of layout.
@@ -62,9 +49,9 @@ function initCanvas() {
     canvas.addEventListener("mouseup", onMouseup, false);
 
  	// Load component.
-    componentQueue.push(new Component("nRF51822", 200, 100, 140, 140, layoutScale));
-    componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
-    c = componentQueue[0];
+    // componentQueue.push(new Component("nRF51822", 200, 100, 140, 140, layoutScale));
+    // componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
+    // c = componentQueue[0];
 
     redraw();
 
@@ -95,6 +82,8 @@ function redraw() {
 	drawComponents(c);
 
 	// Draw the info if component is selected.
+	if(c == undefined)
+		return;
 	if(c.selected || (mouseState == 1)) 
 		drawInfo();
 }
@@ -125,7 +114,8 @@ function drawComponents(c) {
 	}
 
 	// Draw the selected component on top layer.
-	drawComponent(c);
+	if(c != undefined)
+		drawComponent(c);
 }
 
 // Draw a component on grid.
@@ -177,9 +167,9 @@ function onMouseup(e) {
 		}
 	}
 
-	context.font = '16pt Calibri';
-  	context.fillStyle = 'gray';
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 750);
+	// context.font = '16pt Calibri';
+ //  	context.fillStyle = 'gray';
+ //  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 750);
 }
 
 function mouseDownTimeout() {
@@ -229,12 +219,13 @@ function onMouseDown(e) {
         
 	}
 	
-	c.selected = false;
+	if(c != undefined)
+		c.selected = false;
 	redraw();
-    context.font = '16pt Calibri';
-  	context.fillStyle = 'gray';
-  	context.fillText((e.pageX-canvasDiv.offsetLeft)+"  "+(e.pageY-canvasDiv.offsetTop)+" "+c.pageX+" "+c.pageY, 800, 650);
-  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
+   //  context.font = '16pt Calibri';
+  	// context.fillStyle = 'gray';
+  	// context.fillText((e.pageX-canvasDiv.offsetLeft)+"  "+(e.pageY-canvasDiv.offsetTop)+" "+c.pageX+" "+c.pageY, 800, 650);
+  	// context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
   	// context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
 }
 
@@ -317,4 +308,12 @@ window.requestAnimFrame = (function(callback) {
 	};
 })();
 
+$(document).ready(function() {
+	$('.tab-links a').on('click', function(e)  {
+		var currentAttr = $(this).attr('href');
+		$('.tabs ' + currentAttr).show().siblings().hide();
+		$(this).parent('li').addClass('active').siblings().removeClass('active');
 
+		e.preventDefault();
+	});
+});

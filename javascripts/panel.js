@@ -22,7 +22,37 @@ function initPanelCanvas() {
 }
 
 function showComponentList(e) {
-	var div = document.getElementById('uC');
-	// e.style.color = 'red';
-	div.innerHTML = div.innerHTML + "<i>"+e.value+"</i>";
+
+	e.parentNode.innerHTML += "<i>"+e.id+"</i>";
+	switch(e.id) {
+	case "nRF51822":
+		componentQueue.push(new Component("nRF51822", 200, 100, 140, 140, layoutScale));
+		break;
+	case "Atmega328p":
+		componentQueue.push(new Component("Atmega328p", 200, 100, 140, 140, layoutScale));
+		break;
+	case "MPU9250":
+		componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
+		break;
+	}
+	c = componentQueue[componentQueue.length-1];
+
+	document.getElementById('componentListDiv').style.display = "none";
+
+	redraw();
+
+}
+
+function menuBottonClick(e) {
+	if(e.id == "close") {
+		document.getElementById('componentListDiv').style.display = "none";
+		return;
+	}
+	else if(e.id == "addComponent") {
+		document.getElementById('componentListDiv').style.display = "inline";
+	}
+	else if(e.id == "deleteComponent") {
+		e.parentNode.innerHTML += "<i>"+c.name+"</i>";
+
+	}
 }

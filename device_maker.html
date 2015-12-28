@@ -3,7 +3,8 @@
   <head>
     <title>HTML5 Canvas</title>
     <link rel="stylesheet" type="text/css" href="device_maker.css">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
+    <script ype="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="./javascripts/device_maker.js"></script>
     <script type="text/javascript" src="./javascripts/icon.js"></script>
     <script type="text/javascript" src="./javascripts/panel.js"></script>
@@ -14,8 +15,8 @@
     <div id="canvasDiv"></div>
     <div id="canvasIconDiv"></div>
     <div id="canvasPanelDiv"></div>
-    <div id="canvasMenuDiv">
-      
+    <div id="componentListDiv">
+      <input type="button" class="closeButton" value="✕" id="close" onclick="menuBottonClick(this);">
       <div class="tabs">
         <ul class="tab-links">
           <li class="active"><a href="#uC">Microcontroller</a></li>
@@ -24,26 +25,20 @@
  
         <div class="tab-content">
           <div id="uC" class="tab active">
-              <input type="button" class="conponentButton" value="nRF51822" id="nRF51822" onclick="showComponentList(this);">
-              <input type="button" class="conponentButton" value="Atmega328p" id="Atmega328p" onclick="showComponentList(this);">
+              <input type="button" class="componentButton" value="nRF51822" id="nRF51822" onclick="showComponentList(this);">
+              <input type="button" class="componentButton" value="Atmega328p" id="Atmega328p" onclick="showComponentList(this);">
           </div>
    
           <div id="sensor" class="tab">
-              MPU9250
+              <input type="button" class="componentButton" value="MPU9250" id="MPU9250" onclick="showComponentList(this);">
           </div>
         </div>
       </div>
 
     </div>
-    <div id="componentListDiv">
-      <div id="component1" class="div-inline">QQQQQQQQ</div><div id="component2" class="div-inline">QQQQQQQQ</div><div id="component3" class="div-inline">QQQQQQQQ</div>
-      KKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJKKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
-      KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>KKJKJKJKJKJKJKJ<br>
+    <div id="canvasMenuDiv">
+      <input type="button" class="menuBotton" value="Add Component" id="addComponent" onclick="menuBottonClick(this);">
+      <input type="button" class="menuBotton" value="Delete Component" id="deleteComponent" onclick="menuBottonClick(this);">
     </div>
 
     <script type="text/javascript"> 
@@ -52,6 +47,8 @@
        initPanelCanvas();
 
        initCanvas();
+
+       $(function() { $( "#componentListDiv" ).draggable();});
     });
     </script>
 
