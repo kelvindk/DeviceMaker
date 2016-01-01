@@ -25,20 +25,24 @@
  
         <div class="tab-content">
           <div id="uC" class="tab active">
-              <input type="button" class="componentButton" value="nRF51822" id="nRF51822" onclick="showComponentList(this);">
-              <input type="button" class="componentButton" value="Atmega328p" id="Atmega328p" onclick="showComponentList(this);">
+              <input type="button" class="componentButton" value="nRF51822" id="nRF51822" onclick="showComponentList(this)" onmousemove="">
+              <input type="button" class="componentButton" value="Atmega328p" id="Atmega328p" onclick="showComponentList(this)">
+              <input type="button" class="componentButton" value="CC2541" id="CC2541" onclick="showComponentList(this)">
           </div>
    
           <div id="sensor" class="tab">
-              <input type="button" class="componentButton" value="MPU9250" id="MPU9250" onclick="showComponentList(this);">
+              <input type="button" class="componentButton" value="MPU9250" id="MPU9250" onclick="showComponentList(this)">
+              <input type="button" class="componentButton" value="TMP102" id="TMP102" onclick="showComponentList(this)">
+              <input type="button" class="componentButton" value="INMP441" id="INMP441" onclick="showComponentList(this)">
           </div>
         </div>
       </div>
 
     </div>
     <div id="canvasMenuDiv">
-      <input type="button" class="menuBotton" value="Add Component" id="addComponent" onclick="menuBottonClick(this);">
+      <input type="button" class="menuBotton" value="Add Component" id="addComponent" onclick="menuBottonClick(this)">
       <input type="button" class="menuBotton" value="Delete Component" id="deleteComponent" onclick="menuBottonClick(this);">
+      <input type="button" class="menuBotton" value="Draw Dimension" id="drawDimension" onclick="menuBottonClick(this);">
     </div>
 
     <script type="text/javascript"> 

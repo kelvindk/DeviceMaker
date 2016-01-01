@@ -32,18 +32,20 @@ Component.prototype.isInComponentArea = function(pageX, pageY) {
 	return clicked;
 }
 
-Component.prototype.isCollision = function(c) {
+Component.prototype.isCollision = function(component) {
 	var gridSize = 20*this.layoutScale;
-	if(this.isInComponentArea(c.pageX, c.pageY))
+	component.boundaryX = component.pageX + component.dimX;
+	component.boundaryY = component.pageY + component.dimY;
+	if(this.isInComponentArea(component.pageX, component.pageY))
 		return true;
-	if(this.isInComponentArea(c.pageX+c.dimX, c.pageY))
+	if(this.isInComponentArea(component.pageX+component.dimX, component.pageY))
 		return true;
-	if(this.isInComponentArea(c.pageX, c.pageY+c.dimY))
+	if(this.isInComponentArea(component.pageX, component.pageY+component.dimY))
 		return true;
-	if(this.isInComponentArea(c.pageX+c.dimX, c.pageY+c.dimY))
+	if(this.isInComponentArea(component.pageX+component.dimX, component.pageY+component.dimY))
 		return true;
-	for(i=c.pageX; i<=c.pageX+c.dimX; i=i+gridSize) {
-		for(j=c.pageY; j<=c.pageY+c.dimY; j=j+gridSize) {
+	for(var i=component.pageX; i<=component.pageX+component.dimX; i=i+gridSize) {
+		for(var j=component.pageY; j<=component.pageY+component.dimY; j=j+gridSize) {
 			if(this.isInComponentArea(i, j))
 				return true;
 		}

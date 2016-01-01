@@ -48,26 +48,11 @@ function initCanvas() {
     canvas.addEventListener("mousedown", onMouseDown, false);
     canvas.addEventListener("mouseup", onMouseup, false);
 
- 	// Load component.
-    // componentQueue.push(new Component("nRF51822", 200, 100, 140, 140, layoutScale));
-    // componentQueue.push(new Component("MPU9250", 200, 340, 100, 100, layoutScale));
-    // c = componentQueue[0];
-
     redraw();
 
     console.log("Initialize");
-
-	// Mouse right click event.
- //    canvasDiv.addEventListener('contextmenu', function(ev) {
-	//     ev.preventDefault();
-	//     // alert('success!');
-	//     return false;
-	// }, false);
 }
 
-// $(canvasIconDiv).hide();
-// $(canvasIconDiv).show();
-// $(document.getElementById('componentList')).show();
 
 // Redraw current state.
 function redraw() {
@@ -93,7 +78,7 @@ function redraw() {
 function drawGrid() {
 	context.beginPath();
 	context.lineWidth = 0.1;
-    for (i = 0; i <= canvasHeight; i=i+gridSize) {
+    for(var i = 0; i <= canvasHeight; i=i+gridSize) {
     	context.moveTo(i, 0);
     	context.lineTo(i, canvasHeight);
     	context.moveTo(0, i);
@@ -107,7 +92,7 @@ function drawGrid() {
 
 // Draw all component on grid.
 function drawComponents(c) {
-	for(i=0; i<componentQueue.length; i++) {
+	for(var i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i] == c)
 			continue;
 		drawComponent(componentQueue[i]);
@@ -125,11 +110,11 @@ function drawComponent(component) {
 		component.dimX*layoutScale, component.dimY*layoutScale);
 	context.fillStyle = component.color;
 	context.fill();
-	context.closePath();
 	if(component.selected ||((mouseState==1)&&(c==component))) {
 		context.lineWidth = 1;
 		context.strokeStyle = 'red';
 	}
+	context.closePath();
 	context.stroke();
 
 
@@ -158,7 +143,7 @@ function onMouseup(e) {
 		return;
 	clearTimeout(mouseDownTimeoutVar);
 
-	for(i=0; i<componentQueue.length; i++) {
+	for(var i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i].isInComponentArea(e.pageX-canvasDiv.offsetLeft, e.pageY-canvasDiv.offsetTop)) {
 			c = componentQueue[i];
 			c.selected = true;
@@ -176,7 +161,7 @@ function mouseDownTimeout() {
 	if(mouseState == 1)
 		return;
 
-	for(i=0; i<componentQueue.length; i++) {
+	for(var i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i].isInComponentArea(mouseX-canvasDiv.offsetLeft, mouseY-canvasDiv.offsetTop)) {
 			canvas.addEventListener('mousemove', mouseMoveEvent, false);
 		    mouseState = 1;
@@ -191,6 +176,19 @@ function mouseDownTimeout() {
 			break;
 		}
 	}
+}
+
+function setComponentDrag(component) {
+	canvas.addEventListener('mousemove', mouseMoveEvent, false);
+    mouseState = 1;
+    component.color = componentSelectedColor;
+	requestAnimFrame(dragComponent);
+	c = component;
+	preX = c.pageX;
+	preY = c.pageY;
+
+	// Enable keyboard event.
+	window.addEventListener('keydown',keybaordEvent,false);
 }
 
 
@@ -263,7 +261,7 @@ var mouseMoveEvent = function(e) {
 	}
 
 	// Check component collision.
-	for(i=0; i<componentQueue.length; i++) {
+	for(var i=0; i<componentQueue.length; i++) {
 		if(componentQueue[i] == c) {
 			continue;
 		}
@@ -295,9 +293,9 @@ function dragComponent() {
 	// Enable the animation that the selected component follows mouse cursor.
 	requestAnimFrame(dragComponent);
 
-	context.font = '16pt Calibri';
-  	context.fillStyle = 'gray';
-  	context.fillText(componentCollision+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseY/gridSize)*gridSize+" "+c.pageX+" "+c.pageY, 800, 700);
+	// context.font = '16pt Calibri';
+ //  	context.fillStyle = 'gray';
+ //  	context.fillText(componentCollision+" "+Math.round(mouseX/gridSize)*gridSize+" "+Math.round(mouseY/gridSize)*gridSize+" "+c.pageX+" "+c.pageY, 800, 700);
 }
 
 window.requestAnimFrame = (function(callback) {
