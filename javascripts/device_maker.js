@@ -151,10 +151,6 @@ function onMouseup(e) {
 			break;
 		}
 	}
-
-	// context.font = '16pt Calibri';
- //  	context.fillStyle = 'gray';
- //  	context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 750);
 }
 
 function mouseDownTimeout() {
@@ -220,11 +216,6 @@ function onMouseDown(e) {
 	if(c != undefined)
 		c.selected = false;
 	redraw();
-   //  context.font = '16pt Calibri';
-  	// context.fillStyle = 'gray';
-  	// context.fillText((e.pageX-canvasDiv.offsetLeft)+"  "+(e.pageY-canvasDiv.offsetTop)+" "+c.pageX+" "+c.pageY, 800, 650);
-  	// context.fillText(e.which+" "+e.type+" "+e.timeStamp, 800, 700);
-  	// context.fillText(c.isInComponentArea(e.pageX-canvas.offsetLeft, e.pageY-canvas.offsetTop)+" "+c.boundaryX+" "+c.boundaryY, 800, 350);
 }
 
 
@@ -233,6 +224,7 @@ function keybaordEvent(e) {
 		mouseState = 0;
 		c.pageX = preX;
 		c.pageY = preY;
+		c.selected = false;
 		window.removeEventListener('keydown', keybaordEvent);
 	}
 }

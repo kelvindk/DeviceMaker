@@ -1,6 +1,8 @@
 // Panel
 var canvasPanel;
 var contextPanel;
+var isDrawDimension = false;
+var dimensionPointQueue = new Array();
 
 function initPanelCanvas() {
 // Create icon canvasa
@@ -55,16 +57,6 @@ function showComponentList(e) {
 }
 
 function menuBottonClick(e) {
-	// if(e.id == "close") {
-		
-	// }
-	// else if(e.id == "addComponent") {
-	// 	document.getElementById('componentListDiv').style.display = "inline";
-	// }
-	// else if((e.id == "deleteComponent") && (c != undefined) && (c.selected)) {
-	// 	// e.parentNode.innerHTML += "<i>"+c.selected+" "+componentQueue.indexOf(c)+"</i>";
-		
-	// }
 
 	switch(e.id) {
 	case "close":
@@ -72,9 +64,14 @@ function menuBottonClick(e) {
 		break;
 	case "addComponent":
 		document.getElementById('componentListDiv').style.display = "inline";
+		document.getElementById('drawDimension').className = "menuBotton";
+		isDrawDimension = false;
+
+		canvas.addEventListener("mousedown", onMouseDown, false);
+		canvas.addEventListener("mouseup", onMouseup, false);
 		break;
 	case "deleteComponent":
-		if(c.selected) {
+		if(c && c.selected) {
 			componentQueue.splice(componentQueue.indexOf(c), 1);
 			c = null;
 			redraw();
@@ -82,8 +79,58 @@ function menuBottonClick(e) {
 		
 		break;
 	case "drawDimension":
-		console.log(e.className);
-		e.className = "menuSelectedBotton";
+		if(!isDrawDimension) { // Enable draw dimension
+			e.className = "menuSelectedBotton";
+			isDrawDimension = true;
+
+			canvas.removeEventListener("mousedown", onMouseDown);
+    		canvas.removeEventListener("mouseup", onMouseup);
+
+    		canvas.addEventListener("click", onMouseClickDimension, false);
+		}
+		else { // Disable draw dimension
+			e.className = "menuBotton";
+			isDrawDimension = false;
+
+			canvas.addEventListener("mousedown", onMouseDown, false);
+    		canvas.addEventListener("mouseup", onMouseup, false);
+		}
+		
 		break;
 	}
 }
+
+function onMouseClickDimension(e) {
+	
+	//dimensionPointQueue
+	var prePoint = {x: 200, y: 200};
+	var curPoint = {x: 400, y: 200};
+
+	context.lineWidth = 1;
+	context.beginPath();
+	context.moveTo(prePoint.x, prePoint.y);
+	context.lineTo(curPoint.x, curPoint.y);
+	context.closePath();
+	context.stroke();
+	var mouseX = e.clientX-canvasDiv.offsetLeft;
+    var mouseY = e.clientY-canvasDiv.offsetTop;
+
+	isLineCollisionToComponents(prePoint, curPoint, mouseX, mouseY);
+}
+
+function isLineCollisionToComponents(prePoint, curPoint, mouseX, mouseY) {
+	// Determine line equation: y=ax+b
+    if(prePoint.x==curPoint.x) { // Handle the exception for vertical line.
+    	var pointX = prePoint.x;
+    	var pointY = mouseY;
+    }
+    else {
+    	var a = (prePoint.y-curPoint.y)/(prePoint.x-curPoint.x);
+		var b = prePoint.y-(prePoint.x*a);
+		// var c =
+		var pointX = mouseX;
+		var pointY = pointX*a+b;
+    }
+    console.log(mouseX+" "+mouseY+" "+pointX+" "+pointY);
+}
+
