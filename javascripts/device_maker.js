@@ -50,7 +50,7 @@ function initCanvas() {
 
     redraw();
 
-    console.log("Initialize");
+    // console.log("Initialize");
 }
 
 
@@ -66,11 +66,16 @@ function redraw() {
 	// Draw all components.
 	drawComponents(c);
 
+	// Draw dimension of the board.
+	drawDimension();
+
 	// Draw the info if component is selected.
 	if(c == undefined)
 		return;
 	if(c.selected || (mouseState == 1)) 
 		drawInfo();
+
+
 }
 
 
@@ -126,7 +131,7 @@ function drawComponent(component) {
 // Draw info of selected component.
 function drawInfo() {
 	contextPanel.beginPath();
-	contextPanel.rect(0, 0, 300, 200);
+	contextPanel.rect(0, 0, 300, 500);
 	contextPanel.fillStyle = "rgba(255, 255, 255, 0.8)";
 	contextPanel.fill();
 	contextPanel.closePath();

@@ -2,7 +2,7 @@
 var canvasPanel;
 var contextPanel;
 var isDrawDimension = false;
-var dimensionPointQueue = new Array();
+var dimensionPointArray = new Array();
 
 function initPanelCanvas() {
 // Create icon canvasa
@@ -20,7 +20,7 @@ function initPanelCanvas() {
 	// contextPanel.fill();
 	// contextPanel.closePath();
 
-	console.log("Initialize Panel");
+	// console.log("Initialize Panel");
 }
 
 function showComponentList(e) {
@@ -43,7 +43,7 @@ function showComponentList(e) {
 		componentQueue.push(new Component("TMP102", 0, 0, 100, 100, layoutScale));
 		break;
 	case "INMP441":
-		componentQueue.push(new Component("", 0, 0, 20, 100, layoutScale));
+		componentQueue.push(new Component("", 0, 0, 100, 40, layoutScale));
 		break;
 	}
 	c = componentQueue[componentQueue.length-1];
@@ -67,6 +67,7 @@ function menuBottonClick(e) {
 		document.getElementById('drawDimension').className = "menuBotton";
 		isDrawDimension = false;
 
+		canvas.removeEventListener("click", onMouseClickDimension);
 		canvas.addEventListener("mousedown", onMouseDown, false);
 		canvas.addEventListener("mouseup", onMouseup, false);
 		break;
@@ -87,11 +88,14 @@ function menuBottonClick(e) {
     		canvas.removeEventListener("mouseup", onMouseup);
 
     		canvas.addEventListener("click", onMouseClickDimension, false);
+    		// canvas.addEventListener("dblclick", onMouseDbclickDimension, false);
+    		
 		}
 		else { // Disable draw dimension
 			e.className = "menuBotton";
 			isDrawDimension = false;
 
+			canvas.removeEventListener("click", onMouseClickDimension);
 			canvas.addEventListener("mousedown", onMouseDown, false);
     		canvas.addEventListener("mouseup", onMouseup, false);
 		}
@@ -100,37 +104,107 @@ function menuBottonClick(e) {
 	}
 }
 
+function onMouseDbclickDimension(e) {
+	console.log("onMouseDbclickDimension");
+}
+
 function onMouseClickDimension(e) {
 	
 	//dimensionPointQueue
-	var prePoint = {x: 200, y: 200};
-	var curPoint = {x: 400, y: 200};
+	// var curPoint = {x: 400, y: 200};
 
-	context.lineWidth = 1;
-	context.beginPath();
-	context.moveTo(prePoint.x, prePoint.y);
-	context.lineTo(curPoint.x, curPoint.y);
-	context.closePath();
-	context.stroke();
 	var mouseX = e.clientX-canvasDiv.offsetLeft;
     var mouseY = e.clientY-canvasDiv.offsetTop;
+    var gridX = Math.round(mouseX/gridSize)*gridSize/layoutScale;
+    var gridY = Math.round(mouseY/gridSize)*gridSize/layoutScale;
 
-	isLineCollisionToComponents(prePoint, curPoint, mouseX, mouseY);
+    if(dimensionPointArray.length == 0) {
+    	if(isPointInComponentArea(gridX, gridY)) {
+    		console.log("Collision init queue");
+    		return;
+    	}
+    	else {
+    		dimensionPointArray.push({x: gridX, y: gridY});
+    		return;
+    	}
+    }
+    else { 
+    	var prePoint = dimensionPointArray[dimensionPointArray.length-1];
+    	if(isLineCollisionToComponents(prePoint, gridX, gridY)) {
+    		console.log("Collision");
+    		return;
+    	}
+    	else {
+    		dimensionPointArray.push({x: gridX, y: gridY});
+    		redraw();
+    
+		    
+    	}
+    }
+	// var prePoint = {x: 300, y: 300};
+
+    
+	
 }
 
-function isLineCollisionToComponents(prePoint, curPoint, mouseX, mouseY) {
+function drawDimension() {
+	if(dimensionPointArray.length == 0)
+		return;
+	context.lineWidth = 1;
+	context.beginPath();
+	var headPoint = dimensionPointArray[0];
+	context.moveTo(headPoint.x, headPoint.y);
+	for(var i=0; i<dimensionPointArray.length; i++) {
+		context.lineTo(dimensionPointArray[i].x, dimensionPointArray[i].y);
+	}
+	context.strokeStyle = "rgba(255, 0, 255, 1)";
+	context.stroke();
+}
+
+function isLineCollisionToComponents(prePoint, gridX, gridY) {
+	
+
 	// Determine line equation: y=ax+b
-    if(prePoint.x==curPoint.x) { // Handle the exception for vertical line.
-    	var pointX = prePoint.x;
-    	var pointY = mouseY;
+    if(prePoint.x==gridX) { // Handle the exception for vertical line.
+    	var drt = prePoint.y<gridY; // Direction of line.
+    	var gridStep = drt?gridSize:gridSize*(-1);
+    	for(var i=prePoint.y; drt?i<=gridY:i>=gridY; i=i+gridStep) {
+    		var pointX = prePoint.x;
+    		var pointY = i;
+    		// console.log(gridX+" "+gridY+" "+pointX+" "+pointY);
+    		if(isPointInComponentArea(pointX, pointY)) {
+    			// console.log("Collision vertical");
+    			return true;
+    		}
+    	}
     }
     else {
-    	var a = (prePoint.y-curPoint.y)/(prePoint.x-curPoint.x);
+    	var a = (prePoint.y-gridY)/(prePoint.x-gridX);
 		var b = prePoint.y-(prePoint.x*a);
-		// var c =
-		var pointX = mouseX;
-		var pointY = pointX*a+b;
+		var drt = prePoint.x<gridX; // Direction of line.
+		var gridStep = drt?1:-1;
+		// console.log(gridX+" "+gridY+" a="+a+" b="+b+" drt="+drt);
+    	for(var i=prePoint.x; drt?i<=gridX:i>=gridX; i=i+gridStep) {
+			var pointX = i;
+			var pointY = pointX*a+b;
+    		// console.log(gridX+" "+gridY+" "+pointX+" "+pointY);
+    		if(isPointInComponentArea(pointX, pointY)) {
+    			// console.log("Collision");
+    			return true;
+    		}
+    	}
     }
-    console.log(mouseX+" "+mouseY+" "+pointX+" "+pointY);
+    return false;
+}
+
+function isPointInComponentArea(pointX, pointY) {
+	// Check component collision.
+	for(var j=0; j<componentQueue.length; j++) {
+		// Collision check with current component.
+		if(componentQueue[j].isInComponentArea(pointX, pointY)) {
+			return true;
+		}
+	}
+	return false;
 }
 
