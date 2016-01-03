@@ -36,6 +36,11 @@
   /*background-color: grey;*/
 }
 
+.iconButton {
+  width: 50px;
+  height: 50px;
+}
+
 #canvasMenuDiv {
   width: 300px;
   height: 340px;
@@ -89,7 +94,7 @@
 }
 
 .menuBotton {
-  width: 200px;
+  width: 220px;
   /*height: 100px;*/
   font-size: 200px;
   /*margin-left: 50px;*/
@@ -98,7 +103,7 @@
 }
 
 .menuSelectedBotton {
-  width: 200px;
+  width: 220px;
   /*height: 100px;*/
   font-size: 200px;
   color: red;

@@ -125,6 +125,7 @@ function onMouseClickDimension(e) {
     	}
     	else {
     		dimensionPointArray.push({x: gridX, y: gridY});
+    		drawDimension();
     		return;
     	}
     }
@@ -137,28 +138,38 @@ function onMouseClickDimension(e) {
     	else {
     		dimensionPointArray.push({x: gridX, y: gridY});
     		redraw();
-    
-		    
     	}
     }
-	// var prePoint = {x: 300, y: 300};
-
     
 	
 }
 
 function drawDimension() {
-	if(dimensionPointArray.length == 0)
+	
+	switch(dimensionPointArray.length) {
+	case 0:
 		return;
-	context.lineWidth = 1;
-	context.beginPath();
-	var headPoint = dimensionPointArray[0];
-	context.moveTo(headPoint.x, headPoint.y);
-	for(var i=0; i<dimensionPointArray.length; i++) {
-		context.lineTo(dimensionPointArray[i].x, dimensionPointArray[i].y);
+	case 1:
+		context.lineWidth = 2;
+		var headPoint = dimensionPointArray[0];
+		context.beginPath();
+		context.arc(headPoint.x, headPoint.y, 2, 0, 2 * Math.PI, false);
+		context.strokeStyle = "rgba(255, 0, 255, 1)";
+		context.stroke();
+		return;
+	default:
+		context.lineWidth = 1;
+		context.beginPath();
+		var headPoint = dimensionPointArray[0];
+		context.moveTo(headPoint.x, headPoint.y);
+		for(var i=0; i<dimensionPointArray.length; i++) {
+			context.lineTo(dimensionPointArray[i].x, dimensionPointArray[i].y);
+		}
+		context.strokeStyle = "rgba(255, 0, 255, 1)";
+		context.stroke();
+		break;
 	}
-	context.strokeStyle = "rgba(255, 0, 255, 1)";
-	context.stroke();
+	
 }
 
 function isLineCollisionToComponents(prePoint, gridX, gridY) {

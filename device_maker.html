@@ -13,10 +13,15 @@
   <body bgcolor="#333333">
 
     <div id="canvasDiv"></div>
-    <div id="canvasIconDiv"></div>
+    <div id="canvasIconDiv">
+      <input type="image" class="iconButton" id="saveButton" src="./icons/save.png" onclick="onclickIconButton(this)">
+      <input type="image" class="iconButton" id="autoButton" src="./icons/auto.png" onclick="onclickIconButton(this)">
+      <input type="image" class="iconButton" id="importButton" src="./icons/import.png" onclick="onclickIconButton(this)">
+      <input type="image" class="iconButton" id="exportButton" src="./icons/export.png" onclick="onclickIconButton(this)">
+    </div>
     <div id="canvasPanelDiv"></div>
     <div id="componentListDiv">
-      <input type="button" class="closeButton" value="✕" id="close" onclick="menuBottonClick(this);">
+      <input type="button" class="closeButton" value="X" id="close" onclick="menuBottonClick(this);">
       <div class="tabs">
         <ul class="tab-links">
           <li class="active"><a href="#uC">Microcontroller</a></li>
@@ -41,13 +46,13 @@
     </div>
     <div id="canvasMenuDiv">
       <input type="button" class="menuBotton" value="Add Component" id="addComponent" onclick="menuBottonClick(this)">
-      <input type="button" class="menuBotton" value="Delete Component" id="deleteComponent" onclick="menuBottonClick(this);">
-      <input type="button" class="menuBotton" value="Draw Dimension" id="drawDimension" onclick="menuBottonClick(this);">
+      <input type="button" class="menuBotton" value="Delete Component" id="deleteComponent" onclick="menuBottonClick(this)">
+      <input type="button" class="menuBotton" value="Draw Dimension" id="drawDimension" onclick="menuBottonClick(this)">
     </div>
 
     <script type="text/javascript"> 
     $(document).ready(function() {
-       initIconCanvas();
+       // initIconCanvas();
        initPanelCanvas();
 
        initCanvas();
