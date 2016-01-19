@@ -10,6 +10,7 @@ function Component(name, pageX, pageY, dimX, dimY, layoutScale) {
 	this.boundaryY = pageY + dimY;
 	this.layoutScale = layoutScale;
 	this.selected = false;
+	this.descrip = "";
 }
 
 Component.prototype.alt = function() {

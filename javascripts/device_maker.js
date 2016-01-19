@@ -58,7 +58,6 @@ function initCanvas() {
 function redraw() {
 	// Clean layout.
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
-	contextPanel.clearRect(0, 0, 300, 400);
 
 	// Draw grid.
 	drawGrid();
@@ -70,10 +69,15 @@ function redraw() {
 	drawDimension();
 
 	// Draw the info if component is selected.
-	if(c == undefined)
+	if(c == undefined) 
 		return;
-	if(c.selected || (mouseState == 1)) 
+	if(c.selected || (mouseState == 1)) {
 		drawInfo();
+	}
+	else {
+		document.getElementById('canvasPanelDiv').style.display = "none";
+	}
+		
 
 
 }
@@ -130,16 +134,10 @@ function drawComponent(component) {
 
 // Draw info of selected component.
 function drawInfo() {
-	contextPanel.beginPath();
-	contextPanel.rect(0, 0, 300, 500);
-	contextPanel.fillStyle = "rgba(255, 255, 255, 0.8)";
-	contextPanel.fill();
-	contextPanel.closePath();
-	// context.stroke();
-
-	contextPanel.font = componentFontSize*1.2+"pt Calibri";
-  	contextPanel.fillStyle = "red";
-  	contextPanel.fillText(c.name+" info...", 5, 20);
+	var canvasPanelDiv = document.getElementById('canvasPanelDiv');
+	canvasPanelDiv.style.display = "inline";
+	canvasPanelDiv.innerHTML = "<h1>"+ c.name+"</h1>"+c.descrip;
+	// +"<h2>Peripherals</h2><p>MPU9250</p>";
 
 }
 

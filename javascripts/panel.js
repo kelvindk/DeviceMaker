@@ -6,21 +6,14 @@ var dimensionPointArray = new Array();
 
 function initPanelCanvas() {
 // Create icon canvasa
-    var canvasPanelDiv = document.getElementById('canvasPanelDiv');
-	canvasPanel = document.createElement('canvas');
-	canvasPanel.setAttribute('width', 300);
-	canvasPanel.setAttribute('height', 400);
-	canvasPanel.setAttribute('id', 'canvasPanel');
-	canvasPanelDiv.appendChild(canvasPanel);
-	contextPanel = canvasPanel.getContext("2d");
+ //    var canvasPanelDiv = document.getElementById('canvasPanelDiv');
+	// canvasPanel = document.createElement('canvas');
+	// canvasPanel.setAttribute('width', 300);
+	// canvasPanel.setAttribute('height', 400);
+	// canvasPanel.setAttribute('id', 'canvasPanel');
+	// canvasPanelDiv.appendChild(canvasPanel);
+	// contextPanel = canvasPanel.getContext("2d");
 
-	// contextPanel.beginPath();
-	// contextPanel.rect(0, 0, 260, 200);
-	// contextPanel.fillStyle = "rgba(255, 255, 255, 0.8)";
-	// contextPanel.fill();
-	// contextPanel.closePath();
-
-	// console.log("Initialize Panel");
 }
 
 function showComponentList(e) {
@@ -28,7 +21,10 @@ function showComponentList(e) {
 	// e.parentNode.innerHTML += "<i>"+e.id+"</i>";
 	switch(e.id) {
 	case "nRF51822":
-		componentQueue.push(new Component("nRF51822", 0, 0, 140, 140, layoutScale));
+		var new_c =  new Component("nRF51822", 0, 0, 160, 180, layoutScale);
+		// new_c.descrip = "<ul style='list-style-type:none'><li>Bluetooth Smart (BLE)</li><li>32-bit ARM Cortex M0 CPU core</li><li>256kB flash + 32kB RAM</li></ul>";
+		new_c.descrip = "<p>Bluetooth Smart (BLE)</p><p>32-bit ARM Cortex M0 CPU core</p><p>256kB flash + 32kB RAM</p>";
+		componentQueue.push(new_c);
 		break;
 	case "CC2541":
 		componentQueue.push(new Component("CC2541", 0, 0, 140, 140, layoutScale));
@@ -37,7 +33,9 @@ function showComponentList(e) {
 		componentQueue.push(new Component("Atmega328p", 0, 0, 140, 140, layoutScale));
 		break;
 	case "MPU9250":
-		componentQueue.push(new Component("MPU9250", 0, 0, 100, 100, layoutScale));
+		var new_c =  new Component("MPU9250", 0, 0, 60, 140, layoutScale);
+		new_c.descrip = "<p>9-axis Motion sensor</p><p>Accelerometer + Gyro + Compass</p><p>Interface: I2C</p>";
+		componentQueue.push(new_c);
 		break;
 	case "TMP102":
 		componentQueue.push(new Component("TMP102", 0, 0, 100, 100, layoutScale));
@@ -75,6 +73,7 @@ function menuBottonClick(e) {
 		if(c && c.selected) {
 			componentQueue.splice(componentQueue.indexOf(c), 1);
 			c = null;
+			document.getElementById('canvasPanelDiv').style.display = "none";;
 			redraw();
 		}
 		
@@ -145,27 +144,27 @@ function onMouseClickDimension(e) {
 }
 
 function drawDimension() {
-	
+
 	switch(dimensionPointArray.length) {
 	case 0:
 		return;
 	case 1:
-		context.lineWidth = 2;
+		context.lineWidth = 5;
 		var headPoint = dimensionPointArray[0];
 		context.beginPath();
 		context.arc(headPoint.x, headPoint.y, 2, 0, 2 * Math.PI, false);
-		context.strokeStyle = "rgba(255, 0, 255, 1)";
+		context.strokeStyle = "rgba(255, 0, 50, 1)";
 		context.stroke();
 		return;
 	default:
-		context.lineWidth = 1;
+		context.lineWidth = 3;
 		context.beginPath();
 		var headPoint = dimensionPointArray[0];
 		context.moveTo(headPoint.x, headPoint.y);
 		for(var i=0; i<dimensionPointArray.length; i++) {
 			context.lineTo(dimensionPointArray[i].x, dimensionPointArray[i].y);
 		}
-		context.strokeStyle = "rgba(255, 0, 255, 1)";
+		context.strokeStyle = "rgba(255, 0, 50, 1)";
 		context.stroke();
 		break;
 	}

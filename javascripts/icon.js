@@ -1,8 +1,21 @@
 
+var auto_display = false;
+
 function onclickIconButton(e) {
   switch(e.id) {
   case "autoButton":
-    alert("icon autoButton");
+    // alert("icon autoButton");
+    if(auto_display==false) {
+      auto_display = true;
+      document.getElementById('nRF51822_MPU9250_icon').style.display = "inline";
+      dimensionPointArray = new Array();
+      redraw();
+    }
+    else {
+      auto_display = false;
+      document.getElementById('nRF51822_MPU9250_icon').style.display = "none";
+    }
+    
     break;
   }
   

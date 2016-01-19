@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Device Maker</title>
+    <title>ScopeMaker</title>
     <link rel="stylesheet" type="text/css" href="device_maker.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
     <script ype="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
     <script type="text/javascript" src="./javascripts/device_maker.js"></script>
-    <script type="text/javascript" src="./javascripts/icon.js"></script>
     <script type="text/javascript" src="./javascripts/panel.js"></script>
+    <script type="text/javascript" src="./javascripts/icon.js"></script>
     <script type="text/javascript" src="./javascripts/component.js"></script>
   </head>
   <body bgcolor="#333333">
 
-    <div id="canvasDiv"></div>
+    <div id="canvasDiv">
+      <img class="componentIcon1" id="nRF51822_MPU9250_icon" src="./icons/nRF51822_MPU9250_L.png">
+      <!-- <img class="componentIcon" id="nRF51822_icon" src="./icons/nRF51822_MPU9250_B.png"> -->
+    </div>
     <div id="canvasIconDiv">
       <input type="image" class="iconButton" id="saveButton" src="./icons/save.png" onclick="onclickIconButton(this)">
       <input type="image" class="iconButton" id="autoButton" src="./icons/auto.png" onclick="onclickIconButton(this)">
       <input type="image" class="iconButton" id="importButton" src="./icons/import.png" onclick="onclickIconButton(this)">
       <input type="image" class="iconButton" id="exportButton" src="./icons/export.png" onclick="onclickIconButton(this)">
     </div>
-    <div id="canvasPanelDiv"></div>
+    <div id="canvasPanelDiv">
+
+
+    </div>
     <div id="componentListDiv">
       <input type="button" class="closeButton" value="X" id="close" onclick="menuBottonClick(this);">
       <div class="tabs">
@@ -53,7 +59,7 @@
     <script type="text/javascript"> 
     $(document).ready(function() {
        // initIconCanvas();
-       initPanelCanvas();
+       // initPanelCanvas();
 
        initCanvas();
 
